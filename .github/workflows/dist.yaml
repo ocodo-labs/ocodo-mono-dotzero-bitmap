@@ -3,7 +3,7 @@ name: Release bitmap fonts
 on:
   push:
     tags:
-      - "*"
+      - "*.*.*"
 
 permissions:
   contents: write
@@ -18,6 +18,11 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v6
+
+      - name: Setup Python environment
+        run: |
+          set -euo pipefail
+          uv sync
 
       - name: Validate release tag
         env:
@@ -51,10 +56,42 @@ jobs:
             --silent \
             --show-error \
             --location \
-            "${FONT_URL}" \
-            --output "${FONT_PATH}"
+            --output "${FONT_PATH}" \
+            "${FONT_URL}"
 
           test -s "${FONT_PATH}"
+
+          echo "Installed:"
+          ls -lh "${FONT_PATH}"
+
+      - name: Verify source font
+        run: |
+          set -euo pipefail
+
+          uv run python - <<'PY'
+          from pathlib import Path
+          import freetype
+
+          font = Path.home() / ".local/share/fonts/OcodoMonoDotZero-Light.ttf"
+
+          if not font.is_file():
+              raise SystemExit(f"Font not found: {font}")
+
+          print(f"Font: {font}")
+          print(f"Size: {font.stat().st_size} bytes")
+
+          face = freetype.Face(str(font))
+
+          print(
+              "Font:",
+              face.family_name.decode() if face.family_name else "unknown"
+          )
+          print(
+              "Style:",
+              face.style_name.decode() if face.style_name else "unknown"
+          )
+          print("FreeType successfully opened the font.")
+          PY
 
       - name: Generate bitmap fonts
         run: |
@@ -72,7 +109,9 @@ jobs:
         run: |
           set -euo pipefail
 
-          mapfile -t fonts < <(find dist -type f -name '*.psfu' -print | sort)
+          mapfile -t fonts < <(
+            find dist -type f -name '*.psfu' -print | sort
+          )
 
           if [[ "${#fonts[@]}" -ne 6 ]]; then
             echo "Expected exactly 6 PSF2 fonts, found ${#fonts[@]}:"
