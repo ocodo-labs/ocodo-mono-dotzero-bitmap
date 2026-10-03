@@ -25,8 +25,16 @@ sudo install -Dm644 \
 
 ```
 
-Setting for use in `/etc/vconsole.conf`
+Use in tty 1 -> 6, use:
 
 ```
-FONT=ocodo-mono-dotzero-23x42.psfu
+sudo systemctl edit getty@tty1.service
 ```
+
+Paste this:
+
+```
+[Service]
+ExecStartPre=/usr/bin/setfont /usr/share/kbd/consolefonts/ocodo-mono-dotzero-23x42.psfu
+```
+Or the psfu font you prefer. 
