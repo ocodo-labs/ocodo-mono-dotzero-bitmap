@@ -1,6 +1,6 @@
 [project]
 name = "ocodo-mono-dotzero-bitmap"
-version = "0.1.0"
+version = "1.0.2"
 description = "Generate Linux PSF2 bitmap console fonts from Ocodo Mono DotZero Nerd Font"
 requires-python = ">=3.11"
 dependencies = [
