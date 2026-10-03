@@ -16,12 +16,12 @@ Generates the bitmap font in dist.
 
 # Install bitmap fonts
 
-From the project folder after generate e.g. height 42 will generate 23x42:
+From the project folder after generate e.g. height 42 will generate 26x48:
 
 ```
 sudo install -Dm644 \
-  dist/ocodo-mono-dotzero-23x42.psfu \
-  /usr/share/kbd/consolefonts/ocodo-mono-dotzero-23x42.psfu
+  dist/ocodo-mono-dotzero-26x48.psfu \
+  /usr/share/kbd/consolefonts/ocodo-mono-dotzero-26x48.psfu
 
 ```
 
@@ -35,7 +35,7 @@ Add this and save.
 
 ```
 [Service]
-ExecStartPre=/usr/bin/setfont /usr/share/kbd/consolefonts/ocodo-mono-dotzero-23x42.psfu
+ExecStartPre=/usr/bin/setfont /usr/share/kbd/consolefonts/ocodo-mono-dotzero-26x48.psfu
 ```
 We'll then link the override to all the ttys
 
@@ -46,3 +46,11 @@ for n in {2..6}; do
               /etc/systemd/system/getty@tty${n}.service.d/override.conf
 done
 ```
+The daemon reload systemd.
+
+```
+sudo systemctl daemon-reload
+```
+
+When you open a pty (Ctrl+Alt+1,2,3,4,5 or 6) the font will be set to `ocodo-mono-dotzero-26x48.psu` 
+
