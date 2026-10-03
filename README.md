@@ -31,10 +31,18 @@ Use in tty 1 -> 6, use:
 sudo systemctl edit getty@tty1.service
 ```
 
-Paste this:
+Add this and save.
 
 ```
 [Service]
 ExecStartPre=/usr/bin/setfont /usr/share/kbd/consolefonts/ocodo-mono-dotzero-23x42.psfu
 ```
-Or the psfu font you prefer. 
+We'll then link the override to all the ttys
+
+```
+for n in {2..6}; do
+  sudo mkdir -p /etc/systemd/system/getty@tty${n}.service.d/
+  sudo ln -sf /etc/systemd/system/getty@tty1.service.d/override.conf \
+              /etc/systemd/system/getty@tty${n}.service.d/override.conf
+done
+```
