@@ -7,7 +7,6 @@ Initial target:
 - framebuffer: 3840×2160
 - rasterizer: FreeType
 - output: PSF2
-- glyphs: full Unicode coverage from source font
 
 ```
 uv run python -m ocodo_bitmap.generate <height px>
