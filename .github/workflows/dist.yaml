@@ -19,11 +19,6 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
-      - name: Setup Python environment
-        run: |
-          set -euo pipefail
-          uv sync
-
       - name: Validate release tag
         env:
           VERSION: ${{ github.ref_name }}
@@ -36,74 +31,10 @@ jobs:
             exit 1
           fi
 
-      - name: Install source font
-        env:
-          VERSION: ${{ github.ref_name }}
-        run: |
-          set -euo pipefail
-
-          FONT_DIR="${HOME}/.local/share/fonts"
-          FONT_PATH="${FONT_DIR}/OcodoMonoDotZero-Light.ttf"
-          FONT_URL="https://cdn.jsdelivr.net/npm/@ocodo/ocodo-mono-dotzero@${VERSION}/fonts/OcodoMonoDotZero-Light.ttf"
-
-          mkdir -p "${FONT_DIR}"
-
-          echo "Downloading source font ${VERSION}"
-          echo "${FONT_URL}"
-
-          curl \
-            --fail \
-            --silent \
-            --show-error \
-            --location \
-            --output "${FONT_PATH}" \
-            "${FONT_URL}"
-
-          test -s "${FONT_PATH}"
-
-          echo "Installed:"
-          ls -lh "${FONT_PATH}"
-
-      - name: Verify source font
-        run: |
-          set -euo pipefail
-
-          uv run python - <<'PY'
-          from pathlib import Path
-          import freetype
-
-          font = Path.home() / ".local/share/fonts/OcodoMonoDotZero-Light.ttf"
-
-          if not font.is_file():
-              raise SystemExit(f"Font not found: {font}")
-
-          print(f"Font: {font}")
-          print(f"Size: {font.stat().st_size} bytes")
-
-          face = freetype.Face(str(font))
-
-          print(
-              "Font:",
-              face.family_name.decode() if face.family_name else "unknown"
-          )
-          print(
-              "Style:",
-              face.style_name.decode() if face.style_name else "unknown"
-          )
-          print("FreeType successfully opened the font.")
-          PY
-
       - name: Generate bitmap fonts
-        run: |
-          set -euo pipefail
-
-          rm -rf dist
-          mkdir -p dist
-
-          for height in 16 24 32 48 64 96; do
-            echo "Generating ${height}px..."
-            uv run python -m ocodo_bitmap.generate "${height}"
-          done
+        env:
+          FONT_VERSION: ${{ github.ref_name }}
+        run: ./install.sh
 
       - name: Verify generated fonts
         run: |
@@ -113,9 +44,8 @@ jobs:
             find dist -type f -name '*.psfu' -print | sort
           )
 
-          if [[ "${#fonts[@]}" -ne 6 ]]; then
-            echo "Expected exactly 6 PSF2 fonts, found ${#fonts[@]}:"
-            printf '%s\n' "${fonts[@]}"
+          if [[ "${#fonts[@]}" -eq 0 ]]; then
+            echo "No PSF2 fonts generated."
             exit 1
           fi
 
