@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import argparse
 import struct
 from pathlib import Path
@@ -7,7 +5,6 @@ from pathlib import Path
 import freetype
 
 from ocodo_bitmap.width import fixed_width
-
 
 FONT = Path.home() / ".local/share/fonts/OcodoMonoDotZero-Light.ttf"
 GLYPH_COUNT = 512
