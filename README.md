@@ -1,6 +1,6 @@
 # Ocodo Mono DotZero Bitmap
 
-Linux PSF2 bitmap console fonts generated from `OcodoMonoDotZero-Light.ttf`.
+Linux PSF2 bitmap console fonts generated from `OcodoMonoDotZero-Light.ttf`]( https://www.npmjs.com/package/@ocodo/ocodo-mono-dotzero )
 
 ## Generate
 
@@ -45,7 +45,4 @@ Tagged releases publish the generated `.psfu` files as GitHub release assets.
 - `uv`
 - `curl`
 - `bash`
-
-## Development
-
-Generation tooling: [ocodo-font-bitmap](https://github.com/ocodo-labs/ocodo-font-bitmap)
+- [ocodo-font-bitmap](https://github.com/ocodo-labs/ocodo-font-bitmap)
